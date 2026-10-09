@@ -1,0 +1,6 @@
+<?php
+require_once __DIR__ . '/includes/bootstrap.php';
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT) ?: 0; $recipe = $id ? Recipe::find($id) : null;
+if (!$recipe) { http_response_code(404); exit('Recipe not found.'); }
+$ingredients = Recipe::ingredients($id);
+?><!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title><?= e($recipe['title']) ?> | Sugar Nest</title><link rel="stylesheet" href="<?= BASE_URL ?>/css/style.css"></head><body class="print-page"><main class="print-sheet"><p class="eyebrow">Sugar Nest recipe card</p><h1><?= e($recipe['title']) ?></h1><p class="detail-description"><?= e($recipe['short_description']) ?></p><p class="byline">Shared by <?= e($recipe['author_name']) ?></p><hr><h2>Ingredients</h2><ul class="ingredient-list"><?php foreach ($ingredients as $ingredient): ?><li><span><?= e($ingredient['quantity']) ?> <?= e($ingredient['unit']) ?></span><strong><?= e($ingredient['ingredient_name']) ?></strong></li><?php endforeach; ?></ul><h2>Instructions</h2><div class="instructions"><?= nl2br(e($recipe['instructions'])) ?></div><button class="button no-print" onclick="window.print()">Print this page</button></main></body></html>
